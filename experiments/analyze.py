@@ -488,11 +488,34 @@ def print_tables(round_metrics, code_evo, final_metrics, feature_df):
 # ── Plotting ────────────────────────────────────────────────────────────────
 
 
+# ACM sigconf dimensions (inches)
+COL_W = 3.333   # single column
+TEXT_W = 7.0     # full text width (figure*)
+
+
 def _setup_style():
-    sns.set_theme(style="whitegrid", font_scale=1.1, rc={
-        "figure.figsize": (10, 5),
-        "figure.dpi": 150,
+    plt.rcParams.update({
+        "font.family": "serif",
+        "font.serif": ["Linux Libertine", "Linux Libertine O", "Times"],
+        "mathtext.fontset": "stix",
+        "font.size": 8,
+        "axes.titlesize": 9,
+        "axes.labelsize": 8,
+        "xtick.labelsize": 7,
+        "ytick.labelsize": 7,
+        "legend.fontsize": 7,
+        "figure.dpi": 300,
+    })
+    sns.set_theme(style="whitegrid", rc={
         "grid.alpha": 0.3,
+        "font.family": "serif",
+        "font.serif": ["Linux Libertine", "Linux Libertine O", "Times"],
+        "font.size": 8,
+        "axes.titlesize": 9,
+        "axes.labelsize": 8,
+        "xtick.labelsize": 7,
+        "ytick.labelsize": 7,
+        "legend.fontsize": 7,
     })
 
 
@@ -501,90 +524,85 @@ def _repo_label(key):
 
 
 def plot_cost_per_round(round_metrics):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(COL_W, COL_W * 0.65))
     for repo_key in REPOS:
         sub = round_metrics[round_metrics["repo"] == repo_key]
         ax.plot(sub["round"], sub["cost_usd"],
-                marker="o", markersize=3, label=_repo_label(repo_key),
-                color=COLORS[repo_key])
+                marker="o", markersize=2, linewidth=1,
+                label=_repo_label(repo_key), color=COLORS[repo_key])
     ax.set_xlabel("Round")
     ax.set_ylabel("Cost (USD)")
-    ax.set_title("Agent Cost per Round")
     ax.legend()
     sns.despine(fig=fig)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.4)
     fig.savefig(ARTIFACTS / "cost_per_round.pdf")
     plt.close(fig)
 
 
 def plot_cumulative_cost(round_metrics):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(COL_W, COL_W * 0.65))
     for repo_key in REPOS:
         sub = round_metrics[round_metrics["repo"] == repo_key].copy()
         sub["cum_cost"] = sub["cost_usd"].cumsum()
         ax.plot(sub["round"], sub["cum_cost"],
-                marker="o", markersize=3, label=_repo_label(repo_key),
-                color=COLORS[repo_key])
+                marker="o", markersize=2, linewidth=1,
+                label=_repo_label(repo_key), color=COLORS[repo_key])
     ax.set_xlabel("Round")
     ax.set_ylabel("Cumulative Cost (USD)")
-    ax.set_title("Cumulative Agent Cost")
     ax.legend()
     sns.despine(fig=fig)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.4)
     fig.savefig(ARTIFACTS / "cumulative_cost.pdf")
     plt.close(fig)
 
 
 def plot_turns_per_round(round_metrics):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(COL_W, COL_W * 0.65))
     for repo_key in REPOS:
         sub = round_metrics[round_metrics["repo"] == repo_key]
         ax.plot(sub["round"], sub["turns"],
-                marker="o", markersize=3, label=_repo_label(repo_key),
-                color=COLORS[repo_key])
+                marker="o", markersize=2, linewidth=1,
+                label=_repo_label(repo_key), color=COLORS[repo_key])
     ax.set_xlabel("Round")
     ax.set_ylabel("Turns (thinker + worker)")
-    ax.set_title("Agent Turns per Round")
     ax.legend()
     sns.despine(fig=fig)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.4)
     fig.savefig(ARTIFACTS / "turns_per_round.pdf")
     plt.close(fig)
 
 
 def plot_loc_growth(code_evo):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(COL_W, COL_W * 0.7))
     for repo_key in REPOS:
         sub = code_evo[code_evo["repo"] == repo_key]
         ax.plot(sub["round"], sub["cumulative_loc"],
-                marker="o", markersize=3, label=_repo_label(repo_key),
-                color=COLORS[repo_key])
+                marker="o", markersize=2, linewidth=1,
+                label=_repo_label(repo_key), color=COLORS[repo_key])
     ax.set_xlabel("Round (commits touching main file)")
     ax.set_ylabel("Cumulative LOC")
-    ax.set_title("Code Growth Over Time")
     ax.legend()
     sns.despine(fig=fig)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.4)
     fig.savefig(ARTIFACTS / "loc_growth.pdf")
     plt.close(fig)
 
 
 def plot_loc_delta(code_evo):
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5), sharey=True)
+    fig, axes = plt.subplots(1, 3, figsize=(TEXT_W, TEXT_W * 0.25), sharey=True)
     for i, repo_key in enumerate(REPOS):
         sub = code_evo[code_evo["repo"] == repo_key]
         axes[i].bar(sub["round"], sub["added"], color=COLORS[repo_key],
-                     alpha=0.8, label="Added")
+                     alpha=0.8, label="Added", width=0.8)
         axes[i].bar(sub["round"], -sub["deleted"], color=COLORS[repo_key],
-                     alpha=0.3, label="Deleted")
+                     alpha=0.3, label="Deleted", width=0.8)
         axes[i].set_title(_repo_label(repo_key))
         axes[i].set_xlabel("Round")
         axes[i].axhline(0, color="black", linewidth=0.5)
-        axes[i].legend(fontsize=9)
+        axes[i].legend()
     axes[0].set_ylabel("Lines")
-    fig.suptitle("LOC Added/Deleted per Round", fontsize=13)
     sns.despine(fig=fig)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.4)
     fig.savefig(ARTIFACTS / "loc_delta_per_round.pdf")
     plt.close(fig)
 
@@ -606,7 +624,7 @@ def plot_final_metrics(final_metrics):
             })
     df = pd.DataFrame(rows)
 
-    fig, axes = plt.subplots(1, 4, figsize=(16, 5))
+    fig, axes = plt.subplots(1, 4, figsize=(TEXT_W, TEXT_W * 0.22))
     for i, (metric, label) in enumerate(zip(metrics, labels)):
         sub = df[df["Metric"] == label]
         sns.barplot(
@@ -617,17 +635,16 @@ def plot_final_metrics(final_metrics):
         axes[i].set_title(label)
         axes[i].set_xlabel("")
         axes[i].set_ylabel("")
-        axes[i].tick_params(axis="x", rotation=25)
+        axes[i].tick_params(axis="x", rotation=30)
         # Value labels
         for bar, val in zip(axes[i].patches, sub["Value"]):
             fmt = f"{val:,.0f}" if val > 10 else f"{val}"
             axes[i].text(
                 bar.get_x() + bar.get_width() / 2, bar.get_height(),
-                fmt, ha="center", va="bottom", fontsize=9,
+                fmt, ha="center", va="bottom", fontsize=6,
             )
-    fig.suptitle("Final Codebase Comparison", fontsize=13)
     sns.despine(fig=fig)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.4)
     fig.savefig(ARTIFACTS / "final_metrics_comparison.pdf")
     plt.close(fig)
 
@@ -643,9 +660,9 @@ def plot_feature_categories(feature_df):
         counts = sub["category"].value_counts()
         data[repo_key] = [counts.get(cat, 0) for cat in categories]
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(TEXT_W, TEXT_W * 0.3))
     x = np.arange(len(repo_keys))
-    width = 0.6
+    width = 0.5
     bottom = np.zeros(len(repo_keys))
 
     cat_colors = sns.color_palette("vlag", n_colors=len(categories))
@@ -657,10 +674,9 @@ def plot_feature_categories(feature_df):
     ax.set_xticks(x)
     ax.set_xticklabels([_repo_label(k) for k in repo_keys])
     ax.set_ylabel("Number of Rounds")
-    ax.set_title("Feature Categories per Repo (Stacked)")
-    ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=9)
+    ax.legend(bbox_to_anchor=(1.01, 1), loc="upper left")
     sns.despine(fig=fig)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.4)
     fig.savefig(ARTIFACTS / "feature_categories.pdf")
     plt.close(fig)
 
@@ -688,30 +704,29 @@ def plot_feature_overlap(feature_df):
     overlap_colors = sns.color_palette("vlag", n_colors=5)
     group_colors = [overlap_colors[0], overlap_colors[2], overlap_colors[4]]
 
-    fig, ax = plt.subplots(figsize=(8, 5))
-    group_labels = ["All 3 repos", "2 repos", "1 repo only"]
+    fig, ax = plt.subplots(figsize=(COL_W, COL_W * 0.7))
+    group_labels = ["All 3", "2 repos", "1 only"]
     group_vals = [len(shared_3), len(shared_2), len(unique)]
-    bars = ax.bar(group_labels, group_vals, color=group_colors, width=0.5)
+    bars = ax.bar(group_labels, group_vals, color=group_colors, width=0.45)
 
     for bar, val in zip(bars, group_vals):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.1,
-                str(val), ha="center", va="bottom", fontsize=12, fontweight="bold")
+                str(val), ha="center", va="bottom", fontsize=7, fontweight="bold")
 
     # Annotate category names
-    y_off = -0.5
+    y_off = -0.4
     for idx, cats in enumerate([shared_3, shared_2, unique]):
         for j, cat in enumerate(cats):
-            ax.text(idx, y_off - j * 0.4, cat,
-                    ha="center", va="top", fontsize=8, style="italic")
+            ax.text(idx, y_off - j * 0.35, cat,
+                    ha="center", va="top", fontsize=5.5, style="italic")
 
-    ax.set_ylabel("Number of Feature Categories")
-    ax.set_title("Feature Category Overlap Across Repos")
+    ax.set_ylabel("Feature Categories")
     ax.set_ylim(bottom=min(
-        y_off - len(max([shared_3, shared_2, unique], key=len)) * 0.4 - 0.5,
+        y_off - len(max([shared_3, shared_2, unique], key=len)) * 0.35 - 0.3,
         -1,
     ))
     sns.despine(fig=fig)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.4)
     fig.savefig(ARTIFACTS / "feature_overlap.pdf")
     plt.close(fig)
 
