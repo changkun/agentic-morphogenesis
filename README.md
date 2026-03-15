@@ -32,7 +32,7 @@ The Wallfacer experiment uses [ralph](https://github.com/changkun/ralph), a Go-b
 
 Ralph persists execution history as JSON logs in a `.ralph/` directory, enabling the Thinker to condition its next goal on the full trajectory of prior rounds. The pipeline supports Claude Code and OpenAI Codex as LLM backends and can resume from any interrupted round.
 
-To test whether the pipeline exhibits the bottleneck migration and role fission patterns described in the paper, we pointed ralph at three empty repositories with the same seed task — *build a cellular automaton* — and let it run autonomously. The three resulting codebases grew independently from the same starting point into substantially different artifacts:
+To test whether the pipeline exhibits the bottleneck migration and role fission patterns described in the paper, we pointed ralph at three empty repositories with no seed task and let it run autonomously. The Thinker independently chose to build a cellular automaton in all three cases. The three resulting codebases grew independently into substantially different artifacts:
 
 | Repository | Language | Lines | Commits | Character |
 |---|---|---|---|---|
