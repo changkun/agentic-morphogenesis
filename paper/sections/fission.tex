@@ -1,0 +1,34 @@
+\section{The Fission Principle}
+
+The observations reported above suggest a regularity that we formalize as follows.
+
+\begin{principle}[Role Fission]
+Role fission occurs when a single agent is required to simultaneously serve two cognitive modes that compete for context window resources. The fission event separates these modes into distinct agents, each with a dedicated context allocation and a narrower scope of responsibility.
+\end{principle}
+
+The three fission events observed in the Wallfacer experiment correspond to three specific mode conflicts, summarized in Table~\ref{tab:fission}.
+
+\begin{table}[h]
+\small
+\caption{Observed fission events and their triggering mode conflicts.}
+\label{tab:fission}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Mode Conflict} & \textbf{Fission Product} & \textbf{Ph.} \\
+\midrule
+Planning vs. Implementation & Strategist & 2 \\
+Execution vs. Reflection & Cartographer & 3 \\
+Generation vs. Judgment & Critic & 4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This pattern bears a structural resemblance to organizational fission in human enterprises. A startup begins with a single individual performing all functions; as the enterprise grows, product management separates from engineering, technical writing separates from development, and quality assurance separates from production. Conway's Law \cite{conway1968} observes that the structure of a software system tends to mirror the communication structure of the organization that produces it. In the Wallfacer experiment, we observe a form of reverse Conway's Law: it is not organizational structure that constrains system architecture, but rather capability pressure within the system that drives structural differentiation. We note that Malone and Crowston's \cite{malone1994} coordination theory provides a formal account of how dependencies between activities give rise to coordination mechanisms, and Simon's \cite{simon1962} theory of near-decomposable systems explains why decomposition along the axis of weakest coupling tends to produce stable hierarchies.
+
+\subsection{Theoretical Extension: Phases 5 to 8}
+
+Beyond the four phases directly observed in the experiment, we conjecture that continued operation would produce additional fission events driven by new categories of bottleneck. We present these as theoretical predictions, not as empirical findings.
+
+We hypothesize that the four-agent system would eventually require a \emph{Coordinator} role to manage global tradeoffs (e.g., when to refactor vs. when to add features), because no existing agent is tasked with cross-cutting prioritization. A \emph{Monitor} role may subsequently separate from the Coordinator to address context saturation, compressing raw agent outputs into summary health metrics and thereby addressing the span-of-control problem identified by Gulick \cite{gulick1937}. As system scale increases further, we anticipate domain decomposition into parallel sub-pipelines, each with its own agent stack, and eventually the emergence of an \emph{Architect} role that treats the system's own architecture as an optimization variable.
+
+This last conjecture, that architecture becomes a variable rather than a constant, is the bridge to the formal framework developed in the next section. Whether these specific phases would materialize in practice, and in this particular order, is an empirical question that we cannot answer from the present case study.

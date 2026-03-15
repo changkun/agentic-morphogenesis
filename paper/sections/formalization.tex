@@ -1,0 +1,68 @@
+\section{Formalization}
+
+\subsection{Trust Calibration as Preference Learning}
+
+The relationship between an agentic system and its human overseers can be understood as a trust calibration problem: for which decisions should the system proceed autonomously, and for which should it consult a human? Static policies (e.g., ``always consult before deployment'') are suboptimal because they either waste human attention on routine decisions or fail to escalate genuinely risky ones. We propose instead that the trust boundary should be \emph{learned} from the history of autonomous and human-assisted decisions and their outcomes.
+
+Let $\mathcal{X}$ denote a decision context space encoding task features, system state, and environmental conditions. We define a latent trust function $f: \mathcal{X} \to \mathbb{R}$ such that $f(x)$ represents the expected relative value of autonomous operation versus human consultation at context $x$. We place a Gaussian Process prior:
+\begin{equation}
+f \sim \mathcal{GP}(\mu_0, k)
+\end{equation}
+where $\mu_0$ encodes a conservative default (consult the human when uncertain) and the kernel $k: \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ encodes coherence assumptions: that similar decision contexts should yield similar trust levels, and that trust varies smoothly in the relevant features.
+
+Crucially, we assume that observations take the form of pairwise preferences rather than scalar evaluations:
+\begin{equation}
+x_i \succ x_j \iff \text{outcome at } x_i \text{ preferred to outcome at } x_j
+\end{equation}
+This is a realistic assumption because stakeholders can typically judge that one system configuration performed better than another, even when they cannot assign absolute quality scores. Following Chu and Ghahramani \cite{chu2005}, the likelihood of an observed preference is modeled via a probit link:
+\begin{equation}
+P(x_i \succ x_j \mid f) = \Phi\!\left(\frac{f(x_i) - f(x_j)}{\sqrt{2}\,\sigma}\right)
+\end{equation}
+where $\Phi$ is the standard normal CDF and $\sigma$ captures noise in preference judgments.
+
+The resulting posterior $p(f \mid \mathcal{D})$ constitutes a calibrated, context-dependent trust model. Its mean yields a dynamic HITL boundary: contexts where the posterior is high proceed autonomously, while contexts where it is low or uncertain trigger human consultation.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=0.92]
+% Axes
+\draw[-{Stealth[length=4pt]}, thick, black!60] (0,0) -- (5.8,0) node[right, font=\tiny\sffamily] {Decision context $x$};
+\draw[-{Stealth[length=4pt]}, thick, black!60] (0,-0.8) -- (0,3.2) node[above, font=\tiny\sffamily] {$f(x)$};
+
+% GP mean curve
+\draw[thick, blue!70] plot[smooth, tension=0.7] coordinates {(0.2,0.8) (1,2.2) (2,2.5) (2.8,1.8) (3.5,0.4) (4.2,1.0) (5,2.1) (5.5,2.4)};
+
+% Confidence band
+\fill[blue!8, opacity=0.6] plot[smooth, tension=0.7] coordinates {(0.2,0.3) (1,1.5) (2,1.9) (2.8,1.0) (3.5,-0.3) (4.2,0.2) (5,1.5) (5.5,1.9)} -- plot[smooth, tension=0.7] coordinates {(5.5,2.9) (5,2.7) (4.2,1.8) (3.5,1.1) (2.8,2.6) (2,3.1) (1,2.9) (0.2,1.3)} -- cycle;
+
+% Threshold line
+\draw[dashed, red!60, thick] (0, 1.4) -- (5.8, 1.4);
+\node[font=\tiny\sffamily, text=red!70, anchor=west] at (5.8, 1.4) {$\tau$};
+
+% Autonomous zone
+\node[font=\tiny\sffamily, text=blue!60, fill=white, inner sep=1pt] at (1.5, 2.8) {Autonomous};
+
+% Human zone
+\node[font=\tiny\sffamily, text=red!60, fill=white, inner sep=1pt] at (3.5, -0.5) {Consult human};
+
+% Observation points
+\foreach \x/\y in {0.8/2.1, 1.5/2.4, 2.3/2.3, 3.0/1.6, 3.8/0.5, 4.5/1.1, 5.2/2.2} {
+    \fill[black!70] (\x, \y) circle (1.2pt);
+}
+
+% Labels
+\node[font=\tiny\sffamily, text=black!50] at (2.8, -0.7) {high risk / novel};
+\node[font=\tiny\sffamily, text=black!50] at (1.2, -0.7) {routine};
+
+\end{tikzpicture}
+\caption{Conceptual illustration of the Trust GP. The blue curve shows the posterior mean of $f(x)$; the shaded band shows posterior uncertainty. The dashed threshold $\tau$ defines the HITL boundary: the system operates autonomously when $f(x) > \tau$ and consults a human otherwise. Dots represent observed preference pairs. High-uncertainty regions (e.g., novel contexts around $x \approx 3.5$) fall below the threshold even if the mean is moderate.}
+\label{fig:trustgp}
+\end{figure}
+
+We observe that this formulation unifies the three classical responses to the verification regress. The kernel $k$ encodes \emph{coherentist} assumptions about which contexts should behave similarly. The observed preference pairs provide \emph{pragmatic} grounding in actual outcomes. And the posterior synthesizes both, avoiding the need for \emph{foundationalist} axioms about which verifier is ultimately authoritative. This synthesis connects to de Finetti's \cite{definetti1937} coherence conditions, Ramsey's \cite{ramsey1926} account of subjective probability, and Friston's \cite{friston2010} Free Energy Principle.
+
+\subsection{Architecture Search as Preferential Bayesian Optimization}
+
+If we accept the conjecture that architecture eventually becomes a variable (Phase 8), the Architect agent faces an optimization problem over a configuration space $\mathcal{C}$ encoding the number and types of agent roles, pipeline topology, and resource allocation. The objective, ``system health,'' is inherently multi-dimensional (encompassing complexity growth rate, defect rate, delivery velocity, and human satisfaction) and resists meaningful scalarization.
+
+Preferential Bayesian Optimization (PBO) \cite{gonzalez2017} provides a natural framework: we place a GP prior over $\mathcal{C}$ and update it via preference observations of the form ``configuration $c_i$ produced better outcomes than $c_j$ under workload $w$.'' This approach differs from Neural Architecture Search \cite{zoph2017,elsken2019} in that NAS assumes a scalar reward, while PBO requires only ordinal comparisons. Whether PBO is tractable over realistic agentic configuration spaces, and whether human stakeholders can provide reliable preference judgments at this level of abstraction, are open empirical questions.
