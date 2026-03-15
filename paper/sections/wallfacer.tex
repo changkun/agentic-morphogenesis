@@ -12,66 +12,7 @@ We conducted the experiment across four successive architectural configurations,
 
 \begin{figure*}[t]
 \centering
-\begin{tikzpicture}[
-    agent/.style={rectangle, rounded corners=3pt, draw=#1!70, fill=#1!12, minimum width=1.3cm, minimum height=0.55cm, font=\scriptsize\sffamily, inner sep=2pt, align=center},
-    agent/.default={cBuilder},
-    phase/.style={font=\small\sffamily\bfseries, text=black!80},
-    bottleneck/.style={font=\tiny\sffamily\itshape, text=cBottleneck, align=center},
-    arr/.style={-{Stealth[length=4pt]}, thick, black!50},
-    farr/.style={-{Stealth[length=3pt]}, thick, dashed, black!35},
-    trans/.style={-{Stealth[length=5pt]}, very thick, black!20},
-]
-
-\def\sep{3.8}
-
-% Phase 1
-\node[phase] at (0, 2.5) {Phase 1};
-\node[agent=cBuilder, minimum width=2cm] (b1) at (0, 1.5) {Executor\\[-1pt]{\tiny(all functions)}};
-\draw[arr, looseness=5] (b1.160) to[out=110,in=70] (b1.20);
-\node[bottleneck] at (0, 0.3) {context\\[-1pt]competition};
-
-\draw[trans] (1.2, 1.0) -- (\sep-1.2, 1.0);
-
-% Phase 2
-\node[phase] at (\sep, 2.5) {Phase 2};
-\node[agent=cProposer] (p2) at (\sep, 2.0) {Strategist};
-\node[agent=cBuilder] (b2) at (\sep, 1.0) {Executor};
-\draw[arr] (p2.south) -- (b2.north);
-\draw[farr] (b2.west) to[out=170,in=190] (p2.west);
-\node[bottleneck] at (\sep, 0.3) {knowledge\\[-1pt]decay};
-
-\draw[trans] (\sep+1.4, 1.5) -- (2*\sep-1.4, 1.5);
-
-% Phase 3
-\node[phase] at (2*\sep, 2.5) {Phase 3};
-\node[agent=cProposer] (p3) at (2*\sep-0.9, 2.0) {Strategist};
-\node[agent=cBuilder] (b3) at (2*\sep+0.9, 2.0) {Executor};
-\node[agent=cDocumenter] (d3) at (2*\sep, 0.85) {Cartographer};
-\draw[arr] (p3) -- (b3);
-\draw[arr] (b3.south) -- (d3.north east);
-\draw[farr] (d3.north west) -- (p3.south);
-\node[bottleneck] at (2*\sep, 0.1) {quality\\[-1pt]control};
-
-\draw[trans] (2*\sep+1.4, 1.5) -- (3*\sep-1.4, 1.5);
-
-% Phase 4
-\node[phase] at (3*\sep, 2.5) {Phase 4};
-\node[agent=cProposer] (p4) at (3*\sep-0.9, 2.0) {Strategist};
-\node[agent=cBuilder] (b4) at (3*\sep+0.9, 2.0) {Executor};
-\node[agent=cDocumenter] (d4) at (3*\sep-0.9, 0.85) {Cart.};
-\node[agent=cVerifier] (v4) at (3*\sep+0.9, 0.85) {Critic};
-\draw[arr] (p4) -- (b4);
-\draw[arr] (b4.south) -- (v4.north);
-\draw[arr] (v4) -- (d4);
-\draw[farr] (d4.north) -- (p4.south);
-\draw[farr, cVerifier!60] (v4.east) to[out=0,in=0,looseness=1.8] (b4.east);
-\node[bottleneck] at (3*\sep, 0.1) {coordination\\[-1pt]overhead};
-
-% Bottom annotation
-\draw[decorate, decoration={brace, amplitude=5pt, mirror}, thick, black!30] (-1.3, -0.3) -- (3*\sep+1.3, -0.3);
-\node[font=\tiny\sffamily\itshape, text=black!50] at (1.5*\sep, -0.8) {Empirically observed in the Wallfacer experiment};
-
-\end{tikzpicture}
+\includegraphics{figures/phases.pdf}
 \caption{Architectural evolution across four observed phases. Each transition was triggered by a persistent bottleneck (shown in red). Solid arrows indicate primary information flow; dashed arrows indicate feedback.}
 \label{fig:phases}
 \end{figure*}
@@ -86,128 +27,14 @@ This pattern, in which resolving one constraint exposes another, aligns with Gol
 
 \begin{figure}[t]
 \centering
-\begin{tikzpicture}[scale=0.82,
-    cell/.style={minimum width=1.55cm, minimum height=0.34cm, font=\tiny\sffamily, inner sep=1pt},
-    hi/.style={cell, fill=cVerifier!20, draw=cVerifier!50},
-    lo/.style={cell, fill=cEmpirical!12, draw=cEmpirical!30},
-    md/.style={cell, fill=cConjectured!10, draw=cConjectured!30},
-    lbl/.style={font=\tiny\sffamily\bfseries, text=black!70, anchor=east},
-    plbl/.style={font=\scriptsize\sffamily\bfseries, text=black!80}
-]
-\def\rh{0.48}
-\def\cw{1.75}
-
-\node[plbl] at (0, 0) {Ph.1};
-\node[plbl] at (\cw, 0) {Ph.2};
-\node[plbl] at (2*\cw, 0) {Ph.3};
-
-\node[lbl] at (-0.9, -\rh) {Context};
-\node[lbl] at (-0.9, -2*\rh) {Knowl.};
-\node[lbl] at (-0.9, -3*\rh) {Quality};
-\node[lbl] at (-0.9, -4*\rh) {Coord.};
-
-\node[hi] at (0, -\rh) {\textbf{binding}};
-\node[lo] at (0, -2*\rh) {};
-\node[lo] at (0, -3*\rh) {};
-\node[lo] at (0, -4*\rh) {};
-
-\node[lo] at (\cw, -\rh) {};
-\node[hi] at (\cw, -2*\rh) {\textbf{binding}};
-\node[lo] at (\cw, -3*\rh) {};
-\node[md] at (\cw, -4*\rh) {};
-
-\node[lo] at (2*\cw, -\rh) {};
-\node[lo] at (2*\cw, -2*\rh) {};
-\node[hi] at (2*\cw, -3*\rh) {\textbf{binding}};
-\node[md] at (2*\cw, -4*\rh) {};
-
-\draw[-{Stealth[length=3pt]}, thick, cVerifier!60, dashed]
-    (0.5, -\rh) to[out=-15, in=165] (\cw-0.5, -2*\rh);
-\draw[-{Stealth[length=3pt]}, thick, cVerifier!60, dashed]
-    (\cw+0.5, -2*\rh) to[out=-15, in=165] (2*\cw-0.5, -3*\rh);
-
-\end{tikzpicture}
+\includegraphics{figures/migration.pdf}
 \caption{Bottleneck migration across phases. Dark cells mark the binding constraint; light cells indicate resolved dimensions. Dashed arrows show how each fission relocates the bottleneck.}
 \label{fig:migration}
 \end{figure}
 
 \begin{figure*}[t]
 \centering
-\begin{tikzpicture}[x=1.5cm, y=3.2cm]
-% Axes
-\draw[-{Stealth[length=4pt]}, black!50] (0,0) -- (8.5,0) node[right, font=\tiny\sffamily, xshift=2pt] {Phase};
-\draw[-{Stealth[length=4pt]}, black!50] (0,0) -- (0,1.18) node[above, font=\tiny\sffamily] {\%};
-
-% Y-axis ticks
-\foreach \y/\l in {0/0, 0.25/25, 0.5/50, 0.75/75, 1.0/100} {
-    \draw[black!20] (0,\y) -- (8.2,\y);
-    \node[left, font=\tiny\sffamily, text=black!50] at (-0.1,\y) {\l};
-}
-
-% X-axis labels
-\foreach \x/\l in {1/1, 2/2, 3/3, 4/4, 5/5, 6/6, 7/7, 8/8} {
-    \node[below, font=\tiny\sffamily, text=black!60] at (\x,-0.04) {\l};
-}
-
-% Empirical / conjectured boundary - subtle, no text in data area
-\draw[dashed, black!20, thin] (4.5,-0.05) -- (4.5,1.02);
-\node[font=\tiny\sffamily\itshape, text=black!30, anchor=north] at (2.25,-0.12) {empirical};
-\node[font=\tiny\sffamily\itshape, text=black!30, anchor=north] at (6.35,-0.12) {conjectured};
-
-% Data: Capability (teal)
-\draw[cEmpirical, thick] plot coordinates {(1,0.60) (2,0.75) (3,0.85) (4,0.92) (5,0.95) (6,0.96) (7,0.98) (8,0.99)};
-\foreach \x/\y in {1/0.60, 2/0.75, 3/0.85, 4/0.92, 5/0.95, 6/0.96, 7/0.98, 8/0.99} {
-    \fill[cEmpirical] (\x,\y) circle (1.5pt);
-}
-
-% Data: Coordination cost (red)
-\draw[cVerifier, thick] plot coordinates {(1,0.05) (2,0.15) (3,0.25) (4,0.38) (5,0.48) (6,0.52) (7,0.62) (8,0.58)};
-\foreach \x/\y in {1/0.05, 2/0.15, 3/0.25, 4/0.38, 5/0.48, 6/0.52, 7/0.62, 8/0.58} {
-    \fill[cVerifier] (\x,\y) circle (1.5pt);
-}
-
-% Data: Self-awareness (purple)
-\draw[cCoordinator, thick] plot coordinates {(1,0.00) (2,0.00) (3,0.05) (4,0.08) (5,0.15) (6,0.30) (7,0.40) (8,0.80)};
-\foreach \x/\y in {1/0.00, 2/0.00, 3/0.05, 4/0.08, 5/0.15, 6/0.30, 7/0.40, 8/0.80} {
-    \fill[cCoordinator] (\x,\y) circle (1.5pt);
-}
-
-% Data: Boundary fluidity (orange)
-\draw[cDocumenter, thick, densely dashed] plot coordinates {(1,0.00) (2,0.00) (3,0.00) (4,0.00) (5,0.02) (6,0.03) (7,0.04) (8,0.05)};
-\foreach \x/\y in {5/0.02, 6/0.03, 7/0.04, 8/0.05} {
-    \fill[cDocumenter] (\x,\y) circle (1.2pt);
-}
-
-% Data: Autonomy (blue)
-\draw[cBuilder, thick, densely dashed] plot coordinates {(1,0.10) (2,0.15) (3,0.20) (4,0.25) (5,0.30) (6,0.35) (7,0.40) (8,0.50)};
-\foreach \x/\y in {1/0.10, 2/0.15, 3/0.20, 4/0.25, 5/0.30, 6/0.35, 7/0.40, 8/0.50} {
-    \fill[cBuilder] (\x,\y) circle (1.2pt);
-}
-
-% Data: Ontological depth (pink/monitor green)
-\draw[cMonitor, thick, densely dotted] plot coordinates {(1,0.00) (2,0.00) (3,0.02) (4,0.05) (5,0.08) (6,0.12) (7,0.18) (8,0.25)};
-\foreach \x/\y in {5/0.08, 6/0.12, 7/0.18, 8/0.25} {
-    \fill[cMonitor] (\x,\y) circle (1.2pt);
-}
-
-% Legend
-\node[font=\tiny\sffamily, anchor=west] at (0.2,1.08) {%
-    \textcolor{cEmpirical}{\rule{6pt}{2pt}} Capability\quad
-    \textcolor{cVerifier}{\rule{6pt}{2pt}} Coordination cost\quad
-    \textcolor{cCoordinator}{\rule{6pt}{2pt}} Self-awareness\quad
-    \textcolor{cBuilder}{\rule[0.3ex]{6pt}{0.4pt}\rule[0.3ex]{2pt}{0.4pt}\rule[0.3ex]{6pt}{0.4pt}} Autonomy\quad
-    \textcolor{cDocumenter}{\rule[0.3ex]{6pt}{0.4pt}\rule[0.3ex]{2pt}{0.4pt}\rule[0.3ex]{6pt}{0.4pt}} Boundary fluidity\quad
-    \textcolor{cMonitor}{$\cdots$} Ontological depth
-};
-
-% Annotations - right margin, outside plot area
-\draw[-{Stealth[length=3pt]}, cCoordinator!50, thin] (8.6,0.88) -- (8.05,0.81);
-\node[font=\tiny\sffamily, text=cCoordinator!80, anchor=west, align=left] at (8.65,0.88) {self-awareness\\[-1pt]jump};
-
-\draw[-{Stealth[length=3pt]}, cVerifier!50, thin] (8.6,0.52) -- (8.05,0.58);
-\node[font=\tiny\sffamily, text=cVerifier!80, anchor=west, align=left] at (8.65,0.52) {cost\\[-1pt]declines};
-
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/metrics.pdf}
 \caption{System metric evolution across eight phases. Solid lines represent primary metrics (capability, coordination cost, self-awareness); dashed and dotted lines represent emergent metrics that become significant only in later phases (autonomy, boundary fluidity, ontological depth). Phases 1 to 4 are empirically grounded; Phases 5 to 8 are conjectured extrapolations. The sharp rise in self-awareness at Phase 8 reflects the Architect role's capacity for architectural self-modification. Values are normalized estimates based on the Wallfacer observations (Phases 1--4) and theoretical projections.}
 \label{fig:metrics}
 \end{figure*}

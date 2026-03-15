@@ -2,62 +2,7 @@
 
 \begin{figure*}[t]
 \centering
-\begin{tikzpicture}[
-    phase/.style={rounded rectangle, draw=black!50, minimum width=1.5cm, minimum height=0.55cm, font=\tiny\sffamily, inner sep=2pt},
-    emp/.style={phase, fill=cEmpirical!15},
-    conj/.style={phase, fill=cConjectured!10, draw=cConjectured!40},
-    spec/.style={phase, fill=cSpeculative!10, draw=cSpeculative!40},
-    epoch/.style={font=\tiny\sffamily\bfseries, text=black!60},
-    arr/.style={-{Stealth[length=3pt]}, thick, black!30},
-    every node/.style={align=center}
-]
-
-% Empirical phases
-\node[emp] (p1) at (0, 0) {Ph.1\\Executor};
-\node[emp] (p2) at (2.2, 0) {Ph.2\\+Strategist};
-\node[emp] (p3) at (4.4, 0) {Ph.3\\+Cartographer};
-\node[emp] (p4) at (6.6, 0) {Ph.4\\+Critic};
-
-\draw[arr] (p1) -- (p2);
-\draw[arr] (p2) -- (p3);
-\draw[arr] (p3) -- (p4);
-
-% Conjectured phases
-\node[conj] (p5) at (8.8, 0) {Ph.5\\Coordinator};
-\node[conj] (p6) at (10.6, 0) {Ph.6\\Monitor};
-\node[conj] (p7) at (12.4, 0) {Ph.7\\Domains};
-\node[conj] (p8) at (14.2, 0) {Ph.8\\Architect};
-
-\draw[arr] (p4) -- (p5);
-\draw[arr] (p5) -- (p6);
-\draw[arr] (p6) -- (p7);
-\draw[arr] (p7) -- (p8);
-
-% Speculative extensions (below, aligned under conjectured)
-\node[spec] (pe1) at (8.8, -1.4) {Population\\dynamics};
-\node[spec] (pe2) at (10.6, -1.4) {Multi-\\principal};
-\node[spec] (pe3) at (12.4, -1.4) {Co-\\evolution};
-\node[spec] (pe4) at (14.2, -1.4) {Self-\\reference};
-
-\draw[arr, cConjectured!50] (p8.south) -- (pe4.north);
-\draw[arr, cSpeculative!40] (pe1) -- (pe2);
-\draw[arr, cSpeculative!40] (pe2) -- (pe3);
-\draw[arr, cSpeculative!40] (pe3) -- (pe4);
-
-% Epoch labels
-\draw[decorate, decoration={brace, amplitude=4pt}, thick, cEmpirical!50] (-0.8, 0.55) -- (7.4, 0.55);
-\node[epoch, text=cEmpirical!70] at (3.3, 1.0) {Empirically observed};
-
-\draw[decorate, decoration={brace, amplitude=4pt}, thick, cConjectured!60] (8.0, 0.55) -- (15.0, 0.55);
-\node[epoch, text=cConjectured!80] at (11.5, 1.0) {Theoretically conjectured};
-
-\draw[decorate, decoration={brace, amplitude=4pt, mirror}, thick, cSpeculative!50] (8.0, -1.95) -- (15.0, -1.95);
-\node[epoch, text=cSpeculative!70] at (11.5, -2.35) {Speculative extensions};
-
-% Driving force annotation
-\node[font=\tiny\sffamily\itshape, text=black!40] at (3.3, -0.7) {Each arrow = bottleneck migration triggers fission};
-
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/roadmap.pdf}
 \caption{Roadmap of the framework's progression, with explicit epistemic grading. Blue phases (1 to 4) were directly observed in the Wallfacer experiment. Orange phases (5 to 8) are theoretically conjectured based on the fission principle. Red phases represent speculative extensions to populations, multi-stakeholder settings, and self-referential dynamics. Each transition is driven by bottleneck migration.}
 \label{fig:roadmap}
 \end{figure*}
