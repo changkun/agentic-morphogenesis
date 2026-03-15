@@ -33,10 +33,10 @@ make clean    # removes build artifacts
 @article{ou2025morphogenesis,
   title   = {Architectural Morphogenesis in Autonomous Agent Systems},
   author  = {Ou, Changkun},
-  year    = {2025}
+  year    = {2026}
 }
 ```
 
 ## License
 
-Copyright (c) 2025 Changkun Ou. All rights reserved.
+Copyright (c) 2026 Changkun Ou. All rights reserved.
