@@ -24,12 +24,23 @@ This paper develops a theoretical framework for understanding the architectural 
 
 ## Experiments
 
-| Repository | Description |
-|---|---|
-| [ralph](https://github.com/changkun/ralph) | The Wallfacer agent pipeline (generator agent) |
-| [cellular-automaton-simulator](https://github.com/changkun/cellular-automaton-simulator) | Cellular automaton simulator |
-| [cellular-automaton-explorer](https://github.com/changkun/cellular-automaton-explorer) | Cellular automaton explorer |
-| [cellular-automaton-sandbox](https://github.com/changkun/cellular-automaton-sandbox) | Cellular automaton sandbox |
+The Wallfacer experiment uses [ralph](https://github.com/changkun/ralph), a Go-based autonomous agent pipeline that runs a think-act-commit loop without human intervention. Each round, three specialized roles execute in sequence:
+
+1. **Thinker** — analyzes the current project state and proposes exactly one concrete goal for the next round.
+2. **Worker** — implements the proposed goal directly in the codebase.
+3. **Committer** — documents what changed, stages all modifications, and pushes a commit.
+
+Ralph persists execution history as JSON logs in a `.ralph/` directory, enabling the Thinker to condition its next goal on the full trajectory of prior rounds. The pipeline supports Claude Code and OpenAI Codex as LLM backends and can resume from any interrupted round.
+
+To test whether the pipeline exhibits the bottleneck migration and role fission patterns described in the paper, we pointed ralph at three empty repositories with the same seed task — *build a cellular automaton* — and let it run autonomously. The three resulting codebases grew independently from the same starting point into substantially different artifacts:
+
+| Repository | Language | Lines | Commits | Character |
+|---|---|---|---|---|
+| [cellular-automaton-sandbox](https://github.com/changkun/cellular-automaton-sandbox) | Python | ~15k | 50 | 27 interactive modes across five categories (CA, physics, biology, procedural, algorithms) with a mode-picker menu and demo tour |
+| [cellular-automaton-simulator](https://github.com/changkun/cellular-automaton-simulator) | Python | ~12k | 46 | 28+ simulation modes with genetic algorithm rule discovery, headless batch rendering, GIF/PNG export, and optional NumPy backend |
+| [cellular-automaton-explorer](https://github.com/changkun/cellular-automaton-explorer) | C | ~11k | 72 | Deep scientific analysis focus: 15+ information-theoretic overlays (entropy, Lyapunov, transfer entropy, Wolfram classification), multi-rule zones, wormhole portals, and topology modes (torus, Klein bottle, Möbius) |
+
+All three are single-file, terminal-based, zero-dependency implementations that share common foundations (Conway's Game of Life, pattern stamping, time-travel replay, RLE import/export, genetic algorithm exploration) yet diverged along different axes: breadth of simulation types, algorithmic diversity, and depth of scientific analysis. This divergence from identical initial conditions is one of the phenomena the paper analyzes.
 
 All experiment repos are included as git submodules under `experiments/`.
 
