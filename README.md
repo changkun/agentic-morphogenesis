@@ -1,6 +1,6 @@
 # Architectural Morphogenesis in Autonomous Agent Systems
 
-[[Paper (PDF)](paper/main.pdf)]
+[[Paper (PDF)](build/main.pdf)]
 
 This repository contains the paper, experiment code, and artifacts for our study on architectural evolution in autonomous agentic systems.
 
