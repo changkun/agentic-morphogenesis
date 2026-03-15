@@ -7,3 +7,6 @@
 [submodule "experiments/cellular-automaton-sandbox"]
 	path = experiments/cellular-automaton-sandbox
 	url = https://github.com/changkun/cellular-automaton-sandbox.git
+[submodule "experiments/ralph"]
+	path = experiments/ralph
+	url = https://github.com/changkun/ralph.git
