@@ -5,6 +5,7 @@
 #     "matplotlib",
 #     "numpy",
 #     "pandas",
+#     "seaborn",
 # ]
 # ///
 """Comparative analysis of three autonomously generated cellular automaton repos.
@@ -23,6 +24,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 # ── Configuration ──────────────────────────────────────────────────────────
 
@@ -90,10 +92,12 @@ FEATURE_CATEGORIES = {
     ],
 }
 
+# Sample 3 evenly-spaced colors from the vlag palette (blue, grey, red)
+_VLAG3 = sns.color_palette("vlag", n_colors=3)
 COLORS = {
-    "explorer": "#1f77b4",
-    "sandbox": "#ff7f0e",
-    "simulator": "#2ca02c",
+    "explorer": _VLAG3[0],
+    "sandbox": _VLAG3[1],
+    "simulator": _VLAG3[2],
 }
 
 # ── Data Loading ───────────────────────────────────────────────────────────
