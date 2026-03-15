@@ -34,11 +34,13 @@ Ralph persists execution history as JSON logs in a `.ralph/` directory, enabling
 
 We pointed ralph at three empty repositories with no seed task and let it run autonomously. Notably, the Thinker independently converged on building a cellular automaton in all three cases — despite receiving no goal specification whatsoever. The three resulting codebases then diverged into substantially different artifacts:
 
-| Repository | Language | Lines | Commits | Character |
-|---|---|---|---|---|
-| [cellular-automaton-sandbox](https://github.com/changkun/cellular-automaton-sandbox) | Python | ~15k | 50 | 27 interactive modes across five categories (CA, physics, biology, procedural, algorithms) with a mode-picker menu and demo tour |
-| [cellular-automaton-simulator](https://github.com/changkun/cellular-automaton-simulator) | Python | ~12k | 46 | 28+ simulation modes with genetic algorithm rule discovery, headless batch rendering, GIF/PNG export, and optional NumPy backend |
-| [cellular-automaton-explorer](https://github.com/changkun/cellular-automaton-explorer) | C | ~11k | 72 | Deep scientific analysis focus: 15+ information-theoretic overlays (entropy, Lyapunov, transfer entropy, Wolfram classification), multi-rule zones, wormhole portals, and topology modes (torus, Klein bottle, Möbius) |
+| Repository | Language | Lines | Character |
+|---|---|---|---|
+| [cellular-automaton-sandbox](https://github.com/changkun/cellular-automaton-sandbox) | Python | ~15k | 27 interactive modes across five categories (CA, physics, biology, procedural, algorithms) with a mode-picker menu and demo tour |
+| [cellular-automaton-simulator](https://github.com/changkun/cellular-automaton-simulator) | Python | ~12k | 28+ simulation modes with genetic algorithm rule discovery, headless batch rendering, GIF/PNG export, and optional NumPy backend |
+| [cellular-automaton-explorer](https://github.com/changkun/cellular-automaton-explorer) | C | ~11k | Deep scientific analysis focus: 15+ information-theoretic overlays (entropy, Lyapunov, transfer entropy, Wolfram classification), multi-rule zones, wormhole portals, and topology modes (torus, Klein bottle, Möbius) |
+
+Each repo was run for 42 rounds.
 
 All three are single-file, terminal-based, zero-dependency implementations that share common foundations (Conway's Game of Life, pattern stamping, time-travel replay, RLE import/export, genetic algorithm exploration) yet diverged along different axes: breadth of simulation types, algorithmic diversity, and depth of scientific analysis. This divergence from identical initial conditions is one of the phenomena the paper analyzes.
 
