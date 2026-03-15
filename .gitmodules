@@ -1,0 +1,9 @@
+[submodule "experiments/cellular-automaton-simulator"]
+	path = experiments/cellular-automaton-simulator
+	url = https://github.com/changkun/cellular-automaton-simulator.git
+[submodule "experiments/cellular-automaton-explorer"]
+	path = experiments/cellular-automaton-explorer
+	url = https://github.com/changkun/cellular-automaton-explorer.git
+[submodule "experiments/cellular-automaton-sandbox"]
+	path = experiments/cellular-automaton-sandbox
+	url = https://github.com/changkun/cellular-automaton-sandbox.git
