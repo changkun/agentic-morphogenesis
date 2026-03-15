@@ -2,6 +2,8 @@
 
 [[Paper (PDF)](build/main.pdf)]
 
+![Teaser](paper/figures/teaser.png)
+
 This repository contains the paper, experiment code, and artifacts for our study on architectural evolution in autonomous agentic systems.
 
 ## Abstract
