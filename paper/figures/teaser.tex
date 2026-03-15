@@ -154,6 +154,22 @@
 % Row transitions are implicit from phase numbering (8→9, 16→17)
 
 % ============================================================
+% Recurrence loop: Phase 20 → Phase 1 (higher-order)
+% ============================================================
+
+\def\loopx{7*\xs+1.6}  % right margin for the loop
+\def\loopy{\rone+1.5}   % top margin for the loop
+
+\draw[{Stealth[length=3.5pt, width=3pt]}-,
+      cLimit!40, thick, densely dotted, rounded corners=8pt]
+    (p1.north) -- (0, \loopy) -- (\loopx, \loopy)
+    -- (\loopx, \rthree) -- (p20.east);
+
+\node[font=\tiny\sffamily\itshape, text=cLimit!55, anchor=south, rotate=90]
+    at (\loopx+0.35, {0.5*(\rone+\rthree)})
+    {higher-order recurrence};
+
+% ============================================================
 % Bottom annotation
 % ============================================================
 
