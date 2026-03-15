@@ -22,6 +22,17 @@ This paper develops a theoretical framework for understanding the architectural 
 └── Makefile          Build automation
 ```
 
+## Experiments
+
+| Repository | Description |
+|---|---|
+| [ralph](https://github.com/changkun/ralph) | The Wallfacer agent pipeline (generator agent) |
+| [cellular-automaton-simulator](https://github.com/changkun/cellular-automaton-simulator) | Cellular automaton simulator |
+| [cellular-automaton-explorer](https://github.com/changkun/cellular-automaton-explorer) | Cellular automaton explorer |
+| [cellular-automaton-sandbox](https://github.com/changkun/cellular-automaton-sandbox) | Cellular automaton sandbox |
+
+All experiment repos are included as git submodules under `experiments/`.
+
 ## Building the Paper
 
 Requires a TeX distribution with `latexmk` (e.g., TeX Live or MacTeX).
