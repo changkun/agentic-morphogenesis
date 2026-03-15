@@ -1,5 +1,7 @@
 # Architectural Morphogenesis in Autonomous Agent Systems
 
+[[Paper (PDF)](paper/main.pdf)]
+
 This repository contains the paper, experiment code, and artifacts for our study on architectural evolution in autonomous agentic systems.
 
 ## Abstract
@@ -11,6 +13,8 @@ This paper develops a theoretical framework for understanding the architectural 
 ```
 ├── paper/            LaTeX source for the paper
 │   ├── main.tex      Main document (ACM sigconf format)
+│   ├── sections/     Per-section .tex files
+│   ├── references.bib BibTeX bibliography
 │   └── figures/      External figures
 ├── experiments/      Experiment code and scripts
 ├── artifacts/        Data, logs, and intermediate outputs
