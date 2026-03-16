@@ -164,6 +164,26 @@ The three repos were driven by different versions of the Ralph orchestrator. The
 | Explore/exploit signal | `explore={{.ExplorePercent}}%` + score-based steering: "Lean toward exploration" / "Lean toward exploitation" / "Balance" | None — just "Be creative and strategic if needed" |
 | Worker system prompt | "You are an autonomous software engineer." | "Implement the following goal." (inline, no role framing) |
 
+### Explore Score Mechanism
+
+The explorer's explore/exploit signal is not adaptive or learned — it is a deterministic sine wave with random jitter:
+
+```go
+func ExploreScore(round int) float64 {
+    wave := (math.Sin(float64(round)*2*math.Pi/6-math.Pi/2) + 1) / 2
+    jitter := (rand.Float64() - 0.5) * 0.4
+    return max(0, min(1, wave+jitter))
+}
+```
+
+This produces a **~6-round cycle** oscillating between 0 (full exploitation) and 1 (full exploration), with ±0.2 random jitter. The score is converted to a percentage (`explore=73%`) and bucketed into three steering phrases:
+
+- Score > 0.8 → "Lean toward exploration"
+- Score < 0.2 → "Lean toward exploitation"
+- Otherwise → "Balance exploration and exploitation"
+
+The periodicity means the explorer alternated between phases of adding new capabilities (exploration) and deepening existing ones (exploitation) in roughly 3-round half-cycles. This rhythm prevented the "always add a new mode" attractor that the other two repos fell into.
+
 ### How This Explains the Trajectories
 
 The explore/exploit knob is why the explorer went deep while sandbox and simulator went wide.
