@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 
 \newcommand{\doi}[1]{\href{https://doi.org/#1}{\texttt{doi:#1}}}
+\newcommand{\TODO}[1]{\par\smallskip\noindent\textbf{TODO:} #1\par\smallskip}
 
 \theoremstyle{plain}
 \newtheorem{observation}{Observation}
@@ -29,7 +30,7 @@
 \begin{document}
 
 \begin{abstract}
-This paper develops a theoretical framework for understanding the architectural evolution of autonomous agentic systems. Drawing on a longitudinal case study in which an LLM-based agent pipeline operated without human intervention for seven days, we identify a recurring phenomenon we term \emph{bottleneck migration}: resolving a performance constraint in one dimension reliably relocates it to another, rather than producing net improvement. We propose a \emph{fission principle} that accounts for the observed pattern of role differentiation in multi-agent architectures, and we formalize the trust relationship between agents and human overseers as a Gaussian Process preference learning problem. The framework extends, in a more speculative register, to populations of agent instances, multi-principal preference aggregation, and co-evolutionary dynamics. We examine the ontological limits of self-reconfiguring architectures through the lens of Lawvere's fixed-point theorem and G\"odel's incompleteness, concluding that the stable attractor of such systems is not a particular topology but rather the sustained capacity for topological change. Throughout, we are explicit about which claims rest on empirical observation and which constitute theoretical conjecture intended to guide future investigation.
+This paper studies architectural change in autonomous agentic software systems through a seven-day longitudinal case study (\emph{Wallfacer}) and a three-run replication experiment from empty repositories (\emph{Ralph}). Across these experiments we report two empirical regularities: \emph{bottleneck migration}, in which relieving one constraint relocates the binding constraint to another system dimension, and convergence-then-divergence, in which independent runs select a similar problem domain while specializing along different developmental trajectories. We use these observations to formulate a testable \emph{role-fission} hypothesis, formalize trust calibration as a Gaussian Process preference-learning problem with uncertainty-aware escalation, and recast architecture selection as constrained preferential Bayesian optimization. We then place the findings in the literature on LLM-based agents, self-adaptive software systems, cybernetics, and preference learning. The paper is explicit about epistemic status: empirical results, analytic hypotheses, formal proposals, and speculative extrapolations are separated, and missing evidence is marked with concrete TODOs for future experiments.
 \end{abstract}
 
 \keywords{agentic AI, autonomous systems, preference learning, Bayesian optimization, self-reference, organizational morphogenesis, human-in-the-loop}

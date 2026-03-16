@@ -1,38 +1,118 @@
 \section{Formalization}
 
-\subsection{Trust Calibration as Preference Learning}
+The aim of this section is not to claim a complete theory, but to convert the paper's central constructs into measurable objects. A more scientific account of agentic morphogenesis requires definitions that support logging, comparison across runs, and eventual hypothesis testing.
 
-The relationship between an agentic system and its human overseers can be understood as a trust calibration problem: for which decisions should the system proceed autonomously, and for which should it consult a human? Static policies (e.g., ``always consult before deployment'') are suboptimal because they either waste human attention on routine decisions or fail to escalate genuinely risky ones. We propose instead that the trust boundary should be \emph{learned} from the history of autonomous and human-assisted decisions and their outcomes.
+\subsection{System State, Outcomes, and Bottleneck Migration}
 
-Let $\mathcal{X}$ denote a decision context space encoding task features, system state, and environmental conditions. We define a latent trust function $f: \mathcal{X} \to \mathbb{R}$ such that $f(x)$ represents the expected relative value of autonomous operation versus human consultation at context $x$. We place a Gaussian Process prior:
+We model an agentic system at round $t$ by a state
 \begin{equation}
-f \sim \mathcal{GP}(\mu_0, k)
+S_t = (A_t, W_t, M_t, H_t),
 \end{equation}
-where $\mu_0$ encodes a conservative default (consult the human when uncertain) and the kernel $k: \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ encodes coherence assumptions: that similar decision contexts should yield similar trust levels, and that trust varies smoothly in the relevant features.
-
-Crucially, we assume that observations take the form of pairwise preferences rather than scalar evaluations:
+where $A_t$ is the architecture, $W_t$ is the workload or task distribution, $M_t$ is the persistent artifact state (code, plans, documentation, logs), and $H_t$ is the available human-oversight budget. The architecture is a directed role graph
 \begin{equation}
-x_i \succ x_j \iff \text{outcome at } x_i \text{ preferred to outcome at } x_j
+A_t = (R_t, E_t, B_t),
 \end{equation}
-This is a realistic assumption because stakeholders can typically judge that one system configuration performed better than another, even when they cannot assign absolute quality scores. Following Chu and Ghahramani \cite{chu2005}, the likelihood of an observed preference is modeled via a probit link:
+with roles $R_t$, communication edges $E_t$, and role-specific context or bandwidth budgets $B_t$.
+
+Each round yields a vector of observables
 \begin{equation}
-P(x_i \succ x_j \mid f) = \Phi\!\left(\frac{f(x_i) - f(x_j)}{\sqrt{2}\,\sigma}\right)
+y_t = (q_t, v_t, c_t, h_t) \in \mathbb{R}^4,
 \end{equation}
-where $\Phi$ is the standard normal CDF and $\sigma$ captures noise in preference judgments.
+where $q_t$ denotes quality or correctness, $v_t$ delivery velocity, $c_t$ coordination cost, and $h_t$ human attention consumed. The specific metrics may differ by deployment, but the important point is that performance is \emph{multi-objective}. No single scalar captures system health without contestable weighting assumptions.
 
-The resulting posterior $p(f \mid \mathcal{D})$ constitutes a calibrated, context-dependent trust model. Its mean yields a dynamic HITL boundary: contexts where the posterior is high proceed autonomously, while contexts where it is low or uncertain trigger human consultation.
+Let $\mathcal{D}$ index monitored dimensions and let $s_d(y_t)$ be the normalized slack of dimension $d$ relative to an unacceptable region or target threshold. The active bottleneck at round $t$ is
+\begin{equation}
+b_t = \arg\min_{d \in \mathcal{D}} s_d(y_t).
+\end{equation}
+Suppose an intervention $\pi_t$ changes the architecture from $A_t$ to $A_{t+1}$. We say that \emph{bottleneck migration} occurs when the targeted dimension improves by at least $\epsilon > 0$ but the active bottleneck changes:
+\begin{equation}
+s_{b_t}(y_{t+1}) - s_{b_t}(y_t) \geq \epsilon
+\quad \text{and} \quad
+b_{t+1} \neq b_t.
+\end{equation}
+This definition makes the concept operational: migration is not merely any post hoc story about change, but a measurable shift in the most constrained dimension after a structural intervention.
 
-\begin{figure}[t]
-\centering
-\includegraphics{figures/trustgp.pdf}
-\caption{Conceptual illustration of the Trust GP. The blue curve shows the posterior mean of $f(x)$; the shaded band shows posterior uncertainty. The dashed threshold $\tau$ defines the HITL boundary: the system operates autonomously when $f(x) > \tau$ and consults a human otherwise. Dots represent observed preference pairs. High-uncertainty regions (e.g., novel contexts around $x \approx 3.5$) fall below the threshold even if the mean is moderate.}
-\label{fig:trustgp}
-\end{figure}
+\TODO{Instantiate $y_t$ and $s_d(\cdot)$ for the present experiments. At minimum, the camera-ready version should specify how quality, velocity, coordination cost, and human effort are measured from logs, commits, tests, and review events. Without this measurement protocol, bottleneck labels remain partly interpretive.}
 
-We observe that this formulation unifies the three classical responses to the verification regress. The kernel $k$ encodes \emph{coherentist} assumptions about which contexts should behave similarly. The observed preference pairs provide \emph{pragmatic} grounding in actual outcomes. And the posterior synthesizes both, avoiding the need for \emph{foundationalist} axioms about which verifier is ultimately authoritative. This synthesis connects to de Finetti's \cite{definetti1937} coherence conditions, Ramsey's \cite{ramsey1926} account of subjective probability, and Friston's \cite{friston2010} Free Energy Principle.
+\subsection{Role Fission as a Capacity-Interference Tradeoff}
 
-\subsection{Architecture Search as Preferential Bayesian Optimization}
+The role-fission hypothesis can be stated as a comparison between overloaded local cognition and added coordination cost. For a role $r \in R_t$ with responsibility set $U_r$, define its effective cognitive load as
+\begin{equation}
+L_r(t) = \sum_{u \in U_r} \ell(u,t) + \sum_{\substack{u,v \in U_r \\ u \neq v}} \iota(u,v,t),
+\end{equation}
+where $\ell(u,t)$ is the context demand of responsibility $u$ and $\iota(u,v,t)$ captures interference between responsibilities that compete for the same context window or working memory. Let $B_r(t)$ denote the role's usable context budget and let $\Gamma(r_1,r_2,t)$ denote the communication overhead introduced by splitting $r$ into two roles $r_1$ and $r_2$.
 
-If we accept the conjecture that architecture eventually becomes a variable (Phase 8), the Architect agent faces an optimization problem over a configuration space $\mathcal{C}$ encoding the number and types of agent roles, pipeline topology, and resource allocation. The objective, ``system health,'' is inherently multi-dimensional (encompassing complexity growth rate, defect rate, delivery velocity, and human satisfaction) and resists meaningful scalarization.
+Fission is predicted to be beneficial when the overload penalty exceeds the induced coordination cost:
+\begin{equation}
+L_r(t) - B_r(t) > \lambda \, \Gamma(r_1,r_2,t),
+\end{equation}
+for some deployment-dependent conversion factor $\lambda > 0$. This formalization is intentionally simple, but it makes several qualitative predictions clear.
 
-Preferential Bayesian Optimization (PBO) \cite{gonzalez2017} provides a natural framework: we place a GP prior over $\mathcal{C}$ and update it via preference observations of the form ``configuration $c_i$ produced better outcomes than $c_j$ under workload $w$.'' This approach differs from Neural Architecture Search \cite{zoph2017,elsken2019} in that NAS assumes a scalar reward, while PBO requires only ordinal comparisons. Whether PBO is tractable over realistic agentic configuration spaces, and whether human stakeholders can provide reliable preference judgments at this level of abstraction, are open empirical questions.
+First, increasing context budget should delay the onset of fission. Second, improving summarization or memory artifacts should reduce the interference term $\iota(\cdot,\cdot,t)$ and can therefore substitute for some role splits. Third, as communication bandwidth degrades, the right-hand side grows and the net benefit of additional specialization should eventually reverse. These are experimentally testable claims, not merely interpretive analogies.
+
+\TODO{Test the inequality above with controlled interventions. Hold substrate and workload fixed while varying context budget, communication bandwidth, and the presence of summary-producing roles. The current Wallfacer evidence is observational and does not identify the causal contribution of each factor.}
+
+\subsection{Trust Calibration as Preference Learning with Escalation}
+
+The autonomy boundary between an agentic system and its human overseers can be modeled as a context-dependent abstention problem. Let $\mathcal{X}$ denote a decision-context space derived from system state:
+\begin{equation}
+x_t = \phi(S_t, a_t),
+\end{equation}
+where $a_t$ is a candidate action and $\phi$ extracts relevant features such as task novelty, architectural configuration, recent failure history, and expected blast radius. Define a latent function
+\begin{equation}
+f: \mathcal{X} \to \mathbb{R},
+\end{equation}
+where $f(x)$ is the expected advantage of autonomous execution over human consultation in context $x$. We place a Gaussian Process prior
+\begin{equation}
+f \sim \mathcal{GP}(\mu_0, k),
+\end{equation}
+with conservative prior mean $\mu_0$ and kernel $k$.
+
+As in standard preference learning \cite{chu2005,houlsby2011}, we assume observations arrive as pairwise comparisons rather than calibrated scalar rewards:
+\begin{equation}
+z_{ij} =
+\begin{cases}
+1 & \text{if outcome at } x_i \text{ is preferred to outcome at } x_j, \\
+0 & \text{otherwise.}
+\end{cases}
+\end{equation}
+Using a probit likelihood,
+\begin{equation}
+P(z_{ij}=1 \mid f) =
+\Phi\!\left(\frac{f(x_i)-f(x_j)}{\sqrt{2}\,\sigma}\right),
+\end{equation}
+the posterior mean and uncertainty induce an escalation policy
+\begin{equation}
+\pi_{\mathrm{auto}}(x)=
+\mathbf{1}\!\left[\mu_t(x)-\beta \sigma_t(x) > \tau\right],
+\end{equation}
+where $\beta$ controls risk aversion and $\tau$ is the autonomy threshold. The system proceeds autonomously only when the lower confidence bound exceeds the threshold; otherwise it escalates.
+
+This formulation is close in spirit to reject-option learning \cite{bartlett2008}: the key question is not only which action is better, but when to defer. It also aligns with contextual dueling-bandit formulations \cite{dudik2015}, where policy improvement is driven by pairwise preference feedback under changing context.
+
+\TODO{Instantiate the feature map $\phi$, kernel $k$, and escalation parameters $(\beta,\tau)$ on at least one real deployment. A scientifically stronger version of this paper should compare the learned policy against static review rules under a matched human-attention budget.}
+
+\subsection{Architecture Search as Constrained Preferential Bayesian Optimization}
+
+If architecture is allowed to vary, the system faces a design problem over configurations $c \in \mathcal{C}$, where $c$ encodes role count, topology, memory structure, and resource allocation. Let $u(c,w)$ denote latent utility under workload $w$, and let $g_j(c,w) \leq 0$ encode operational constraints such as latency, token cost, test-failure rate, or human-review load. Because utility is multi-dimensional and difficult to scalarize honestly, we observe preferences of the form
+\begin{equation}
+(c_i,w) \succ (c_j,w)
+\end{equation}
+instead of direct rewards. The natural optimization problem is therefore a constrained version of preferential Bayesian optimization \cite{gonzalez2017,brochu2010}.
+
+Conceptually, an Architect agent maintains a posterior over both utility and feasibility, then proposes the next architecture by balancing exploitation, exploration, and operational safety. This interpretation clarifies what the Architect is and is not. It is not a magical meta-agent that ``knows'' the right topology; it is a sequential experimental design mechanism operating over an architecture space with noisy, preference-based feedback.
+
+\TODO{The present paper does not contain such an optimization loop; it only motivates one. A critical next step is to run an offline replay or online intervention study in which candidate architectures are compared under a fixed workload distribution and a published preference protocol.}
+
+\subsection{Falsifiable Implications}
+
+The formalization above yields four concrete predictions.
+
+\begin{enumerate}[leftmargin=*]
+\item For a fixed workload, increasing effective context budget should delay or suppress role fission.
+\item Summary-producing artifacts should partially substitute for organizational differentiation by reducing interference within a role.
+\item Net performance as a function of role count should be non-monotone: early specialization helps, but coordination cost eventually dominates.
+\item A learned uncertainty-aware escalation boundary should outperform static HITL rules at the same human-review budget when task contexts are heterogeneous.
+\end{enumerate}
+
+These predictions are the main reason to formalize the framework at all. Without them, ``architectural morphogenesis'' would remain a vivid description; with them, it becomes a family of claims that can be contradicted by data.
