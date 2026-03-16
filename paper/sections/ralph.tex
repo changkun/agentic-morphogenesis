@@ -8,9 +8,9 @@ We used \emph{ralph}, an autonomous agent pipeline that runs a three-phase loop:
 
 We pointed ralph at three empty Git repositories with no seed task and no specification of what to build. All three instances used the same LLM substrate (Claude) and the same three-phase loop structure. Two instances (Sandbox and Simulator) used the stock Thinker prompt, which provides no strategic guidance beyond a generic instruction to ``be creative.'' The third instance (Explorer) used a modified Thinker prompt that included two additional signals: awareness of its current round number, and an \emph{explore/exploit score}, a deterministic sinusoidal function of the round number with period ${\approx}6$ rounds and ${\pm}0.2$ random jitter, presented to the Thinker as a percentage (e.g., \texttt{explore=73\%}) with one of three steering phrases (``lean toward exploration,'' ``lean toward exploitation,'' or ``balance''). The signal is not adaptive or learned; it is a fixed oscillation that periodically nudges the Thinker toward deepening existing capabilities rather than adding new ones. This 2+1 design was not planned as a controlled experiment; the prompt modification preceded the experiment and the divergent trajectories were observed post hoc. Nevertheless, the design affords a natural comparison: the two stock-prompt instances serve as near-replications of each other, while the modified instance isolates the effect of a single prompt-level variable. Two instances completed 42 rounds and one completed 33 rounds before being stopped. Table~\ref{tab:ralph_repos} summarizes the resulting codebases.
 
-The resulting evidence is stronger than a single anecdote but still far from a fully powered experiment. Three runs are enough to surface an interesting pattern; they are not enough to cleanly separate prompt effects, sampling variance, and latent substrate priors.
+The resulting evidence is stronger than a single anecdote but still far from a fully powered experiment. Three runs are enough to surface an interesting pattern; they are not enough to cleanly separate prompt effects, sampling variance, and substrate priors.
 
-\TODO{Add additional seeds per condition, publish the exact Thinker prompts, and report temperature or sampling settings. The current 2+1 design is useful as a pilot study, but stronger claims about the explore/exploit signal require replication.}
+\TODO{Add more seeds per condition, publish the exact Thinker prompts, and report temperature or sampling settings. The current 2+1 design is useful as a pilot study, but stronger claims about the explore/exploit signal require replication.}
 
 \begin{table}[t]
 \small
@@ -33,6 +33,7 @@ Simulator  & Python & 12{,}336 & 285 & \$57.80 \\
 \centering
 \includegraphics[width=\columnwidth]{figures/ralph_loc_growth.pdf}
 \caption{Cumulative lines of code across three repositories initialized from empty directories with no seed task. All three converged on cellular automaton implementations. Growth is monotonically increasing with near-zero churn (3.9\%, 0.5\%, and 3.0\% deletion ratios respectively).}
+\Description{A line chart with three monotonically increasing curves, one for each Ralph repository. All start near zero and grow steadily, showing very low code deletion throughout the run.}
 \label{fig:ralph_loc}
 \end{figure}
 
@@ -42,6 +43,7 @@ Simulator  & Python & 12{,}336 & 285 & \$57.80 \\
 \centering
 \includegraphics[width=\textwidth]{figures/ralph_feature_categories.pdf}
 \caption{Feature categories per repository, classified by keyword matching on each round's Thinker goal. Despite convergent initial goals, the three codebases diverged along orthogonal axes: Explorer (modified prompt with explore/exploit signal) toward scientific analysis overlays, Sandbox and Simulator (stock prompt) toward breadth in simulation modes, with Sandbox emphasizing physics and Simulator emphasizing I/O capabilities.}
+\Description{A grouped comparison of feature categories across the three Ralph repositories. Explorer concentrates on scientific-analysis features, Sandbox emphasizes broad interactive simulation categories including physics, and Simulator emphasizes many simulation modes plus tooling and input-output support.}
 \label{fig:ralph_features}
 \end{figure*}
 
@@ -51,6 +53,7 @@ Simulator  & Python & 12{,}336 & 285 & \$57.80 \\
 \centering
 \includegraphics[width=\textwidth]{figures/ralph_final_metrics.pdf}
 \caption{Final codebase comparison across four metrics. The Explorer's high mean cyclomatic complexity (22.9 vs.\ 6.8 and 10.1) reflects its C implementation and deeply nested analysis routines. The Simulator's mode count (131) dwarfs the others, reflecting its strategy of adding many small simulation variants.}
+\Description{A bar-chart comparison of final repository metrics such as code size, mean cyclomatic complexity, number of modes, and cost. Explorer stands out on complexity, Simulator on mode count, and the repositories differ in cost and total size.}
 \label{fig:ralph_metrics}
 \end{figure*}
 
