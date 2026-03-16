@@ -150,3 +150,31 @@ The three repos started from the same seed (Conway's Game of Life) but evolved i
 3. **simulator** (Python) — went **wide + engineered**: accumulated 28 modes similar to sandbox, but also added unique infrastructure (multiplayer networking, scripting engine, HashLife, sound synthesis, GIF encoder). It is a simulation platform with extensibility features.
 
 The sandbox and simulator followed nearly parallel paths (sharing ~16 modes), while the explorer is the outlier — the only one that chose depth over breadth.
+
+## Explaining the Divergence: Orchestrator Prompt Differences
+
+The three repos were driven by different versions of the Ralph orchestrator. The explorer used a modified Ralph with an explore/exploit steering mechanism, while sandbox and simulator used the stock version. This single variable substantially explains the divergent trajectories.
+
+### Thinker Prompt Comparison
+
+| Aspect | **explorer** (modified Ralph) | **sandbox / simulator** (stock Ralph) |
+|---|---|---|
+| Thinker system prompt | "You are a creative technical strategist. Look at this project and its `.ralph/` history of previous rounds." | *(empty — no system prompt)* |
+| Round awareness | `This is round {{.Round}}` — knows its position in the sequence | No round awareness |
+| Explore/exploit signal | `explore={{.ExplorePercent}}%` + score-based steering: "Lean toward exploration" / "Lean toward exploitation" / "Balance" | None — just "Be creative and strategic if needed" |
+| Worker system prompt | "You are an autonomous software engineer." | "Implement the following goal." (inline, no role framing) |
+
+### How This Explains the Trajectories
+
+The explore/exploit knob is why the explorer went deep while sandbox and simulator went wide.
+
+- The explorer's thinker was told to **balance exploration and exploitation**, and was given a score that sometimes pushed it toward **exploitation** — meaning "deepen what you already have." This produced the trajectory of staying on one simulation model (Game of Life) and layering increasingly sophisticated analysis on top of it (Shannon entropy, Lyapunov maps, Fourier spectra, Betti numbers, renormalization group). Each analytical overlay *exploits* the existing simulation engine rather than replacing it.
+
+- The sandbox and simulator thinkers had **no exploitation signal at all**. Their only guidance was "propose ONE goal, be creative." With no pressure to deepen existing features, the default creative strategy was always to **add something new** — a new simulation mode. This explains the near-parallel trajectories of sandbox and simulator: both agents, running the same prompt, converged on the same "add another mode" pattern and even chose many of the same modes (Lenia, Wa-Tor, Boids, Lattice Boltzmann, etc.).
+
+### Conclusion
+
+- **Same prompt → same strategy**: sandbox and simulator both defaulted to breadth-first exploration (27-28 modes each, ~16 shared).
+- **Explore/exploit steering → depth**: explorer was periodically nudged toward exploitation, producing a single deep vertical stack instead.
+
+The divergence in architectural trajectory across the three repos is substantially explained by a single prompt variable: the presence or absence of an explore/exploit score.
