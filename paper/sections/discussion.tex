@@ -2,7 +2,7 @@
 
 \subsection{Practical Implications}
 
-For practitioners building autonomous agentic systems, the framework suggests several design heuristics, which we offer tentatively pending broader empirical validation. First, it may be advisable to begin with the simplest architecture that functions and to add roles only when bottleneck signals are clear and persistent; premature fission incurs coordination overhead without commensurate capability gain. Second, tracking the \emph{location} of bottlenecks over time may provide a more informative diagnostic of system health than monitoring any single performance metric. Third, preference comparison rather than scalar metrics may offer a more tractable and honest approach to architecture evaluation, given the multi-dimensional nature of system health. Fourth, designing for substrate independence (communicating via protocols rather than shared implementation details) enables component substitution, whether replacing one LLM with another or replacing an agent with a human, without disrupting organizational architecture. Fifth, the HITL boundary should be learnable rather than static, as human cognitive bandwidth is typically the scarcest resource in agentic deployments.
+For practitioners building autonomous agentic systems, the framework suggests several design heuristics, which we offer tentatively pending broader empirical validation. First, it may be advisable to begin with the simplest architecture that functions and to add roles only when bottleneck signals are clear and persistent; premature fission incurs coordination overhead without commensurate capability gain. Second, tracking the \emph{location} of bottlenecks over time may provide a more informative diagnostic of system health than monitoring any single performance metric. Third, preference comparison rather than scalar metrics may offer a more tractable and honest approach to architecture evaluation, given the multi-dimensional nature of system health. Fourth, designing for implementation independence (communicating via protocols rather than shared implementation details) enables component substitution, whether replacing one LLM with another or replacing an agent with a human, without disrupting organizational architecture. Fifth, the HITL boundary should be learnable rather than static, as human cognitive bandwidth is typically the scarcest resource in agentic deployments.
 
 \subsection{Threats to Validity}
 
@@ -10,7 +10,7 @@ For practitioners building autonomous agentic systems, the framework suggests se
 
 \textbf{Internal validity.} Wallfacer's architectural transitions were adaptive interventions chosen in response to observed failures. That is appropriate for exploratory systems research, but it means the paper cannot cleanly attribute each downstream change to a single manipulated variable. Ralph offers a stronger comparison, yet its 2+1 design remains underpowered for decisive causal claims about the explore/exploit signal.
 
-\textbf{External validity.} All runs use the same LLM substrate and stay within software-engineering tasks. The convergence on cellular automata may reflect a genuine attractor in the model's prior over open-ended projects, but it may also be a training-distribution artifact. Likewise, the approximate line-count thresholds observed in Wallfacer should not be treated as universal phase transitions.
+\textbf{External validity.} All runs use the same underlying LLM and stay within software-engineering tasks. The convergence on cellular automata may reflect a genuine attractor in the model's prior over open-ended projects, but it may also be a training-distribution artifact. Likewise, the approximate line-count thresholds observed in Wallfacer should not be treated as universal phase transitions.
 
 \textbf{Theoretical validity.} The connections to Lawvere's theorem, G\"odel's incompleteness, dissipative structures, and autopoiesis are intended as interpretive and hypothesis-generating, not as deductions from the data. The paper is strongest when these sections are read as conceptual boundary-marking rather than as validated mechanism.
 
@@ -19,7 +19,7 @@ For practitioners building autonomous agentic systems, the framework suggests se
 The shortest path from the current draft to a stronger scientific paper is a focused experimental program rather than more metaphor. Four pieces of evidence would substantially raise confidence in the framework.
 
 \begin{enumerate}[leftmargin=*]
-\item Multi-seed replications across at least two model substrates, so that convergence and divergence can be separated from substrate-specific priors.
+\item Multi-seed replications across at least two model families, so that convergence and divergence can be separated from model-specific priors.
 \item Controlled fission ablations that vary role count, context budget, and communication bandwidth while holding workload fixed.
 \item A direct evaluation of the Trust GP against static escalation rules under a fixed review budget.
 \item Publication of prompts, logs, intervention criteria, and annotation protocol so that other groups can reproduce the same trajectory analysis.
